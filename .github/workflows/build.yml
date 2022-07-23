@@ -1,0 +1,22 @@
+name: Build
+
+on: [push]
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        target: [x86_64-linux-musl]
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3.0.2
+
+    - name: Build Toolchain
+      run: docker build . --file Dockerfile --build-arg TARGET=${{ matrix.target }} --target deploy --output - | xz > ${{ matrix.target }}.tar.xz
+      env:
+        DOCKER_BUILDKIT: 1
+
+    - name: Test Toolchain
+      run: mkdir -p ${{ matrix.target }} && tar -xJf ${{ matrix.target }}.tar.xz -C ${{ matrix.target }} && ${{ matrix.target }}/bin/${{ matrix.target }}-g++ --version
