@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3.0.2
+    - uses: actions/checkout@v3.3.0
 
     - name: Build Toolchain
       run: docker build . --file Dockerfile --build-arg TARGET=${{ matrix.target }} --target deploy --output - | xz > ${{ matrix.target }}.tar.xz
